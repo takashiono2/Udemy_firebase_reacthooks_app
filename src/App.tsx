@@ -2,11 +2,13 @@ import React ,{ useEffect, useState } from 'react';
 
 import { Counter } from './features/counter/Counter';
 import './App.css';
+import CleanUp from './app/CleanUp';
 
 const App: React.FC = () => {
   const [status, setStatus] = useState<string>("text");
   const [input, setInput] = useState("");
   const [counter, setCounter] = useState(0);
+  const [display, setDisplay] = useState(true);
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>{
     return setInput(e.target.value);
   }
@@ -25,6 +27,8 @@ const App: React.FC = () => {
         <button onClick={()=>setCounter((preCounter)=> preCounter + 1)}>
           Increment
         </button>
+        {display && <CleanUp />}
+        <button onClick={()=>setDisplay(!display)}>Toggle Display</button>
         <Counter />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
