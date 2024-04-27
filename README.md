@@ -24,9 +24,9 @@
 | 15. |  [注意] Sign in 画面のテンプレート |
 | 16. |  Error Failed to parse source map |
 | 17. | Googleアカウント認証 |
-<!-- | 18. |  [訂正] try catch block |
+| 18. |  [訂正] try catch block |
 | 19. | Email + Password 認証 |
-| 20. | ユーザープロフィール機能 |
+<!-- | 20. | ユーザープロフィール機能 |
 | 21. | ユーザープロフィールフォーム|
 | 22. | パスワードリセット機能| -->
 
