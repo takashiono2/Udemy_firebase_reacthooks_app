@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-// import { updateUserProfile } from "../features/userSlice";
+import { updateUserProfile } from "../features/userSlice";
 import styles from "./Auth.module.css";
 import { auth, provider, storage } from "../firebase";
 
@@ -57,16 +57,48 @@ const useStyles = makeStyles((theme) => ({
 
 const Auth: React.FC = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [avatarImage, setAvatarImage] = useState<File | null>(null);
   const [isLogin, setIsLogin] = useState(true);
+
+  const onChangeImageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files![0]) {
+      setAvatarImage(e.target.files![0]);
+      e.target.value = "";
+    }
+  }
 
   const signInEamil = async () => {
     await auth.signInWithEmailAndPassword(email, password);
   }
-  const signUpPassword = async () => {
-    await auth.createUserWithEmailAndPassword(email, password);
-  }
+  const signUpEmail = async () => {
+    const authUser = await auth.createUserWithEmailAndPassword(email, password);
+    let url = "";
+    if (avatarImage) {
+      const S =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      const N = 16;
+      const randomChar = Array.from(crypto.getRandomValues(new Uint32Array(N)))
+        .map((n) => S[n % S.length])
+        .join("");
+      const fileName = randomChar + "_" + avatarImage.name;
+      await storage.ref(`avatars/${fileName}`).put(avatarImage);
+      url = await storage.ref("avatars").child(fileName).getDownloadURL();
+    }
+    await authUser.user?.updateProfile({
+      displayName: username,
+      photoURL: url,
+    });
+    dispatch(
+      updateUserProfile({
+        displayName: username,
+        photoUrl: url,
+      })
+    );
+  };
   const signInGoogle = async () => {
     await auth.signInWithPopup(provider).catch((err) => alert(err.message));
   };
@@ -118,37 +150,37 @@ const Auth: React.FC = () => {
               variant="contained"
               color="primary"
               className={classes.submit}
-              startIcon={<EmailIcon/>}
+              startIcon={<EmailIcon />}
               onClick={
                 isLogin ?
-                (async()=> {
-                  try{
-                    await signInEamil();
-                  }catch(err: any){
-                    alert(err.message)
-                  }
-                })
-                :
-                (async ()=>{
-                  try{
-                    await signUpPassword();
-                  }catch(err: any){
-                    alert(err.message)
-                  }
+                  (async () => {
+                    try {
+                      await signInEamil();
+                    } catch (err: any) {
+                      alert(err.message)
+                    }
+                  })
+                  :
+                  (async () => {
+                    try {
+                      await signUpEmail();
+                    } catch (err: any) {
+                      alert(err.message)
+                    }
 
-                })
+                  })
               }
             >
               {isLogin ? "Login" : "Register"}
             </Button>
             <Grid container>
               <Grid item xs>
-                <span className = {styles.login_reset}>Forgot password?</span>
+                <span className={styles.login_reset}>Forgot password?</span>
               </Grid>
-              <Grid item xs>
+              <Grid item>
                 <span
-                  className = {styles.login_toggleMode}
-                  onClick={()=> setIsLogin(!isLogin)}>
+                  className={styles.login_toggleMode}
+                  onClick={() => setIsLogin(!isLogin)}>
                   {isLogin ? "Create new account ?" : "Back to login"}
                 </span>
               </Grid>
