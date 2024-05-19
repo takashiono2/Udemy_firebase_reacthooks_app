@@ -11,7 +11,7 @@
 | 8. | Redux ToolKit |
 
 </details>
-<summary> セクション3: [認証機能] Twitter App  </summary>
+<summary> セクション3: [認証機能] Twitter App </summary>
 
 | NO | 内容 |
 | ---- | ---- |
@@ -29,4 +29,12 @@
 | 20. | ユーザープロフィール機能 |
 | 21. | ユーザープロフィールフォーム|
 | 22. | パスワードリセット機能|
+</details>
+
+<summary> セクション4: [Tweet機能] Twitter App </summary>
+
+| NO | 内容 |
+| ---- | ---- |
+| 23. | ログインユーザーAvatar (Redux) |
+
 </details>
